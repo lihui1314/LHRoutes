@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'LHRoutes_Example' do
+  pod 'LHRoutes', :path => '../'
+
+  target 'LHRoutes_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
