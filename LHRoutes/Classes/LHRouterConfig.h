@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LHRouterConfig : NSObject
 + (instancetype)shareInstance;
 
-
 /// 注册跳转host
 - (void)registerJumpHost:(NSString *)host;
 
@@ -22,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)registerServiceHost:(NSString *)host;
 
 - (void)unregisterHost:(NSString *)host;
+//
 - (LHRouterHostType)getRouterHostType:(NSString *)host;
 
 @end
