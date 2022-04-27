@@ -18,7 +18,8 @@ static NSString *const kLHShouleCache = @"shouuldCache";
 
 + (instancetype)cache;
 
-@property(nonatomic, strong) NSMutableDictionary<NSString *, id> *serviceCache;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id> *serviceCache;
+@property (nonatomic, strong) dispatch_semaphore_t semaphore;
 - (void)removeService:(NSString *)serviceName;
 - (void)addService:(id)service serviceName:(NSString *)serviceName;
 - (id)getService:(NSString *)serviceName;
@@ -37,12 +38,15 @@ static NSString *const kLHShouleCache = @"shouuldCache";
 }
 
 - (void)addService:(id)service serviceName:(NSString *)serviceName {
-    
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     [self.serviceCache setValue:service forKey:serviceName];
+    dispatch_semaphore_signal(self.semaphore);
 }
 
 - (void)removeService:(NSString *)serviceName {
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     [self.serviceCache setValue:nil forKey:serviceName];
+    dispatch_semaphore_signal(self.semaphore);
 }
 
 - (id)getService:(NSString *)serviceName {
@@ -59,12 +63,20 @@ static NSString *const kLHShouleCache = @"shouuldCache";
     return _serviceCache;
 }
 
+- (dispatch_semaphore_t)semaphore {
+    if (!_semaphore) {
+        _semaphore = dispatch_semaphore_create(1);
+    }
+    return  _semaphore;
+}
+
 @end
 
 
 #pragma mark LHServiceManager
 @interface LHServiceManager ()
 @property (nonatomic, strong, readwrite) NSMutableDictionary *registeredServiceMap;
+@property (nonatomic, strong) dispatch_semaphore_t semaphore;
 @end
 
 @implementation LHServiceManager
@@ -78,19 +90,23 @@ static LHServiceManager *__manager = nil;
 }
 
 - (void)registerService:(NSString *)serviceName shouldCache:(BOOL)shouldCache {
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     if (!serviceName && ![serviceName isKindOfClass:[NSString class]]) {
         return;
     }
     NSDictionary *dic = @{kLHServiceName:serviceName,kLHShouleCache:@(shouldCache)};
     [self.registeredServiceMap setValue:dic forKey:serviceName];
+    dispatch_semaphore_signal(self.semaphore);
 }
 
 - (void)unregisterService:(NSString *)serviceName {
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     if (!serviceName && ![serviceName isKindOfClass:[NSString class]]) {
         return;
     }
     [self.registeredServiceMap setValue:nil forKey:serviceName];
     [[LHServiceCache cache] removeService:serviceName];
+    dispatch_semaphore_signal(self.semaphore);
 }
 
 - (id)getService:(NSString *)serviceName {
@@ -164,5 +180,11 @@ static LHServiceManager *__manager = nil;
     return _registeredServiceMap;
 }
 
+-(dispatch_semaphore_t)semaphore {
+    if (!_semaphore) {
+        _semaphore = dispatch_semaphore_create(1);
+    }
+    return _semaphore;
+}
 
 @end

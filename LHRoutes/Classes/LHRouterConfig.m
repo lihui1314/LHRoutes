@@ -21,6 +21,7 @@
 
 @interface LHRouterConfig ()
 @property (nonatomic, strong) NSMutableDictionary *confDic;
+@property (nonatomic, strong) dispatch_semaphore_t semaphore;
 
 @end
 
@@ -46,6 +47,7 @@
 }
 
 - (void)registerHost:(NSString *)host type:(LHRouterHostType)type {
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     if (!host && ![host isKindOfClass:[NSString class]]) {
         return;
     }
@@ -53,10 +55,13 @@
     element.host = host;
     element.hostType = type;
     [self.confDic setValue:element forKey:host];
+    dispatch_semaphore_signal(self.semaphore);
 }
 
 - (void)unregisterHost:(NSString *)host {
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     [self.confDic setValue:nil forKey:host];
+    dispatch_semaphore_signal(self.semaphore);
 }
 
 - (LHRouterHostType)getRouterHostType:(NSString *)host {
@@ -73,5 +78,10 @@
     }
     return _confDic;
 }
-
+- (dispatch_semaphore_t)semaphore {
+    if (_semaphore == nil) {
+        _semaphore = dispatch_semaphore_create(1);
+    }
+    return _semaphore;
+}
 @end
