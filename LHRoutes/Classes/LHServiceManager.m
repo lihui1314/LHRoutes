@@ -161,7 +161,6 @@ static LHServiceManager *__manager = nil;
         const struct section *section = getsectbynamefromheader((void *)mach_header, "__DATA", "lh_sv_export");
 #endif
         if (section == NULL) {
-            NSAssert(NO, @"Can not find Section from Mach-o.");
             return nil;
         }
         for (addr = section->offset; addr < section->offset + section->size; addr += sizeof(LHRegisterServiceStruct)) {
