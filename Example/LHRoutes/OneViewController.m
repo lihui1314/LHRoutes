@@ -40,7 +40,7 @@
     CGRect r = CGRectMake(0, 0, 0, 0);
     [ @(r) CGRectValue];
     NSDictionary *params = @{@"name":@"设置"};
-    NSURL *URL = [NSURL URLWithString:@"lh://jump.vc.lhrouter/TwoViewController/?#push"];
+    NSURL *URL = [NSURL URLWithString:@"lh://main/towViewPage/?#push"];
     [LHRouter openURL:URL withParams:params];
     
 }

@@ -7,6 +7,7 @@
 
 #import "LHTestService.h"
 #import "LHServiceProtocol.h"
+#import "LHRDefines.h"
 
 
 @interface LHTestService()<LHServiceProtocol>

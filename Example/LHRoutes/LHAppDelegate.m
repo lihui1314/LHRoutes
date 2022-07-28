@@ -8,11 +8,15 @@
 
 #import "LHAppDelegate.h"
 #import "OneViewController.h"
+#import "LHRouterConfig.h"
 
 @implementation LHAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // 注册模块
+    [LHRouterConfigInstance registerJumpHost:@"main"];
+    
     OneViewController *vc = [[OneViewController alloc] init];
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "LHServiceManager.h"
+#import "LHRPageManager.h"
 #import "LHRouterConfig.h"
 
 @implementation LHRouter
@@ -59,15 +60,14 @@
     LHRouterHostType type = [LHRouterConfigInstance getRouterHostType:URL.host];
     if (type == LHRouterHostTypeJumpVC) {
         if (URL.pathComponents.count >= 2) {
-            NSString *cls = URL.pathComponents[1];
-            Class vcClass = NSClassFromString(cls);
+            NSString *key = URL.pathComponents[1];
+            Class vcClass = [[LHRPageManager shareInstance] getPageCls:key];
             if (vcClass) {
                 if (![vcClass isSubclassOfClass:[UIViewController class]]) {
-                    NSAssert(NO, @"%@ class should be subclass of class UIViewController",cls);
+                    NSAssert(NO, @"%@ class should be subclass of class UIViewController",NSStringFromClass(vcClass));
                     return NO;
                 }
             } else {
-                NSAssert(NO, @"%@ class is dose exist ",cls);
                 return NO;
             }
             return YES;
@@ -103,12 +103,10 @@
                 animated = NO;
             }
         }
-        NSString *clsName = URL.pathComponents[1];
-        id obj = [[LHServiceManager shareInstance] getService:clsName];
-        if (!obj) {
-            Class clss = NSClassFromString(clsName);
-            obj = [[clss alloc] init];
-        }
+        NSString *key = URL.pathComponents[1];
+        Class clss = [[LHRPageManager shareInstance] getPageCls:key];
+        UIViewController *obj = [[clss alloc] init];
+        
         [self setAllValues:obj withParams:params];
         LHVCJumpMode jumpMode = [self getJumpModeWith:URL.fragment];
         UIViewController *vc = [self currentViewController];

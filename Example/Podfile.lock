@@ -1,5 +1,5 @@
 PODS:
-  - LHRoutes (1.0.0)
+  - LHRoutes (1.0.2)
 
 DEPENDENCIES:
   - LHRoutes (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  LHRoutes: ccb3be032f9ed9d0501885ae83c723e9a00cb387
+  LHRoutes: 3d50b926cab359908ebd9924525ce961aa25bc0b
 
 PODFILE CHECKSUM: 3cb68d12c28255b9ca4f89d38706b32c0300702f
 

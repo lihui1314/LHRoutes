@@ -6,7 +6,9 @@
 //
 
 #import "TwoViewController.h"
+#import "LHRDefines.h"
 
+LHR_PAGE_EXPORT(towViewPage, TwoViewController)
 @interface TwoViewController ()
 @property (nonatomic, copy) NSString *name;
 
